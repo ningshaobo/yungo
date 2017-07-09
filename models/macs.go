@@ -30,7 +30,7 @@ func MacsAllotMac(host string, domuuid string) (*Vmmac, error) {
 	var err error
 
 	o := orm.NewOrm()
-	
+
 	//	_, err = o.QueryTable(new(Vmmac)).Filter("Vm__Id__exact", 0).All(&mac)
 	o.Raw("select * from vmmac where vm_id = ?", 0).QueryRow(&mac)
 	if err != nil {
@@ -45,8 +45,7 @@ func MacsAllotMac(host string, domuuid string) (*Vmmac, error) {
 		beegologs.Warn("获取 mac 失败，原因是: %v", err.Error())
 		return &mac, err
 	}
-	
-	
+
 	if mac.Id == 0 {
 		// 数据库中找不到空闲mac， 重新生成
 		var newMac string
@@ -66,13 +65,13 @@ func MacsAllotMac(host string, domuuid string) (*Vmmac, error) {
 			}
 		}
 		beegologs.Debug("new mac = %v", mac.Macaddr)
-	} 
+	}
 	mac.Vm = &vm
 	_, _, err = o.ReadOrCreate(&mac, "Macaddr", "VM")
 	if err != nil {
 		beegologs.Warn("获取 mac 失败，原因是: %v", err.Error())
 		return &mac, err
 	}
-	
+
 	return &mac, nil
 }

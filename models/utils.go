@@ -1,11 +1,11 @@
 package models
 
 import (
-	"fmt"
 	"crypto/rand"
+	"fmt"
 	"github.com/astaxie/beego"
-	"os"
 	beegologs "github.com/astaxie/beego/logs"
+	"os"
 )
 
 /**
