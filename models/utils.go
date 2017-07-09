@@ -125,6 +125,7 @@ func UtilsGetMacPrefix() string {
 			}
 		}
 		os.Setenv("MAC_PREFIX", macPrefix)
+		beego.AppConfig.GetSection("")
 	}
 	beegologs.Debug("UtilsGetMacPrefix = %s", macPrefix)
 	return macPrefix

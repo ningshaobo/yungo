@@ -33,6 +33,8 @@ func init() {
 	// 开始 数据库 初始化， 开启 ORM 调试模式
 	orm.Debug = false
 	models.ClustersRegisterDB()
+	models.VmsRegisterDB()
+	models.MacsRegisterDB()
 
 	//注册驱动
 	orm.RegisterDriver("mysql", orm.DRMySQL)                                    //注册默认数据库
