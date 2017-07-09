@@ -1,8 +1,11 @@
 package models
 
 import (
+	"fmt"
+	"crypto/rand"
 	"github.com/astaxie/beego"
 	"os"
+	beegologs "github.com/astaxie/beego/logs"
 )
 
 /**
@@ -27,10 +30,10 @@ func UtilsDBConn() string {
 	var dbConn string
 	dbConn = os.Getenv("DB_CONN")
 	if dbConn == "" {
-		dbSe,err := beego.AppConfig.GetSection("db")
+		dbSe, err := beego.AppConfig.GetSection("db")
 		if err != nil {
 			dbConn = "root:password@tcp(localhost:3306)"
-		}else {
+		} else {
 			dbConn = dbSe["dbconn"]
 			if dbConn == "" {
 				dbConn = "root:password@tcp(localhost:3306)"
@@ -48,10 +51,10 @@ func UtilsDBName() string {
 	var dbName string
 	dbName = os.Getenv("DB_NAME")
 	if dbName == "" {
-		dbSe,err := beego.AppConfig.GetSection("db")
+		dbSe, err := beego.AppConfig.GetSection("db")
 		if err != nil {
 			dbName = "yungo"
-		}else {
+		} else {
 			dbName = dbSe["dbname"]
 			if dbName == "" {
 				dbName = "yungo"
@@ -61,6 +64,7 @@ func UtilsDBName() string {
 	}
 	return dbName
 }
+
 /**
 * @param 获取总台地址
  */
@@ -68,10 +72,10 @@ func UtilsMasterProxyUrl() string {
 	var proxyUrl string
 	proxyUrl = os.Getenv("MASTER_PROXY_URL")
 	if proxyUrl == "" {
-		proxySe, err	:= beego.AppConfig.GetSection("proxy")
+		proxySe, err := beego.AppConfig.GetSection("proxy")
 		if err != nil {
 			proxyUrl = "localhost:8080"
-		}else {
+		} else {
 			proxyUrl = proxySe["masterurl"]
 			if proxyUrl == "" {
 				proxyUrl = "localhost:8080"
@@ -82,3 +86,58 @@ func UtilsMasterProxyUrl() string {
 	return proxyUrl
 }
 
+/**
+* @param 环境变量或者配置获取 mac  前 3 个值
+ */
+func UtilsHostInterface() string {
+	var hostInterface string
+	hostInterface = os.Getenv("HOST_INTERFACE")
+	if hostInterface == "" {
+		vmSe, err := beego.AppConfig.GetSection("vm")
+		if err != nil {
+			hostInterface = "eth0"
+		} else {
+			hostInterface = vmSe["hostinterface"]
+			if hostInterface == "" {
+				hostInterface = "eth0"
+			}
+		}
+		os.Setenv("HOST_INTERFACE", hostInterface)
+	}
+	beegologs.Debug("UtilsHostInterface = %s", hostInterface)
+	return hostInterface
+}
+
+/**
+* @param 环境变量或者配置获取 mac  前 3 个值
+ */
+func UtilsGetMacPrefix() string {
+	var macPrefix string
+	macPrefix = os.Getenv("MAC_PREFIX")
+	if macPrefix == "" {
+		vmSe, err := beego.AppConfig.GetSection("vm")
+		if err != nil {
+			macPrefix = "52:54:00:"
+		} else {
+			macPrefix = vmSe["macprefix"]
+			if macPrefix == "" {
+				macPrefix = "52:54:00:"
+			}
+		}
+		os.Setenv("MAC_PREFIX", macPrefix)
+	}
+	beegologs.Debug("UtilsGetMacPrefix = %s", macPrefix)
+	return macPrefix
+}
+
+/**
+* @param 随机生产网卡 mac 地址
+ */
+func UtilsMacGen() string {
+	macBuf := make([]byte, 3)
+	if _, err := rand.Read(macBuf); err != nil {
+		panic(err)
+	}
+	macPrefix := UtilsGetMacPrefix()
+	return fmt.Sprintf(macPrefix+"%02x:%02x:%02x", macBuf[0], macBuf[1], macBuf[2])
+}
