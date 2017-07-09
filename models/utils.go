@@ -18,8 +18,18 @@ import (
 func UtilsBaseRoute() string {
 	routeBase := os.Getenv("ROUTE_BASE")
 	if routeBase == "" {
-		routeBase = beego.AppConfig.String("appRouteBase")
+		appSe, err := beego.AppConfig.GetSection("app")
+		if err != nil {
+			routeBase = "v1"
+		} else {
+			routeBase = appSe["routebase"]
+			if routeBase == "" {
+				routeBase = "v1"
+			}
+		}
+		os.Setenv("DB_CONN", routeBase)
 	}
+	beegologs.Debug("UtilsBaseRoute = %s", routeBase)
 	return routeBase
 }
 
@@ -41,6 +51,7 @@ func UtilsDBConn() string {
 		}
 		os.Setenv("DB_CONN", dbConn)
 	}
+	beegologs.Debug("UtilsDBConn = %s", dbConn)
 	return dbConn
 }
 
@@ -62,6 +73,7 @@ func UtilsDBName() string {
 		}
 		os.Setenv("DB_NAME", dbName)
 	}
+	beegologs.Debug("UtilsDBName = %s", dbName)
 	return dbName
 }
 
@@ -83,6 +95,7 @@ func UtilsMasterProxyUrl() string {
 		}
 		os.Setenv("MASTER_PROXY_URL", proxyUrl)
 	}
+	beegologs.Debug("UtilsMasterProxyUrl = %s", proxyUrl)
 	return proxyUrl
 }
 

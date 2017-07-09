@@ -6,11 +6,11 @@ import (
 
 // 虚拟机定义
 type Vm struct {
-	Id       int64
-	Uuid     string
-	Hostaddr string
-	HostId   *Host
-	Vmmacs   []*Vmmac `orm:"reverse(many)"` // 一对多反向
+	Id       	int64
+	Uuid     	string
+	Hostaddr 	string
+	Host   		*Host		`orm:"default(0);rel(fk);on_delete(set_default)"`
+	Vmmacs   	[]*Vmmac	`orm:"reverse(many)"` // 一对多反向
 }
 
 // 定义 Vm 联合索引
