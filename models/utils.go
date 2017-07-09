@@ -27,7 +27,7 @@ func UtilsBaseRoute() string {
 				routeBase = "v1"
 			}
 		}
-		os.Setenv("DB_CONN", routeBase)
+		os.Setenv("ROUTE_BASE", routeBase)
 	}
 	beegologs.Debug("UtilsBaseRoute = %s", routeBase)
 	return routeBase

@@ -31,7 +31,7 @@ func init() {
 	// "nsb:nsb123@tcp(192.168.6.1:3306)/?charset=utf8"
 	models.SystemDbInit(dbName, dbConn+"/?charset=utf8")
 	// 开始 数据库 初始化， 开启 ORM 调试模式
-	orm.Debug = false
+	orm.Debug = true
 	models.ClustersRegisterDB()
 	models.VmsRegisterDB()
 	models.MacsRegisterDB()
