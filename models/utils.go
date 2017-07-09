@@ -24,9 +24,19 @@ func UtilsBaseRoute() string {
 * @param 获取数据库连接 ：如： nsb:nsb123@tcp(192.168.6.1:3306)
  */
 func UtilsDBConn() string {
-	dbConn := os.Getenv("DB_CONN")
+	var dbConn string
+	dbConn = os.Getenv("DB_CONN")
 	if dbConn == "" {
-		dbConn = beego.AppConfig.String("appDbConn")
+		dbSe,err := beego.AppConfig.GetSection("db")
+		if err != nil {
+			dbConn = "root:password@tcp(localhost:3306)"
+		}else {
+			dbConn = dbSe["dbconn"]
+			if dbConn == "" {
+				dbConn = "root:password@tcp(localhost:3306)"
+			}
+		}
+		os.Setenv("DB_CONN", dbConn)
 	}
 	return dbConn
 }
@@ -35,36 +45,40 @@ func UtilsDBConn() string {
 * @param 获取数据库名称 ：如：docker
  */
 func UtilsDBName() string {
-	dbName := os.Getenv("DB_NAME")
+	var dbName string
+	dbName = os.Getenv("DB_NAME")
 	if dbName == "" {
-		dbName = beego.AppConfig.String("appDbName")
+		dbSe,err := beego.AppConfig.GetSection("db")
+		if err != nil {
+			dbName = "yungo"
+		}else {
+			dbName = dbSe["dbname"]
+			if dbName == "" {
+				dbName = "yungo"
+			}
+		}
+		os.Setenv("DB_NAME", dbName)
 	}
 	return dbName
 }
-
 /**
 * @param 获取总台地址
  */
-var appProxyUrl = ""
-
-func UtilsGetProxyUrl() string {
-	if appProxyUrl != "" {
-		return appProxyUrl
-	}
-
-	proxyUrl := os.Getenv("PROXY_URL")
+func UtilsMasterProxyUrl() string {
+	var proxyUrl string
+	proxyUrl = os.Getenv("MASTER_PROXY_URL")
 	if proxyUrl == "" {
-		proxyUrl = beego.AppConfig.String("appProxyUrl")
-	}
-	if proxyUrl != "" {
-		appProxyUrl = proxyUrl
+		proxySe, err	:= beego.AppConfig.GetSection("proxy")
+		if err != nil {
+			proxyUrl = "localhost:8080"
+		}else {
+			proxyUrl = proxySe["masterurl"]
+			if proxyUrl == "" {
+				proxyUrl = "localhost:8080"
+			}
+		}
+		os.Setenv("MASTER_PROXY_URL", proxyUrl)
 	}
 	return proxyUrl
 }
 
-/**
-* @param 获取总台地址
- */
-func UtilsSetProxyUrl(proxyUrl string) {
-	appProxyUrl = proxyUrl
-}

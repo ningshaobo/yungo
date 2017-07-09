@@ -55,7 +55,7 @@ func (t *myTransport) RoundTrip(request *http.Request) (*http.Response, error) {
 * @param  反向代理 业务逻辑
  */
 func ProxyHandler(inthis interface{}, myfun func(*http.Response) error, isResult bool) ([]byte, error) {
-	remote, err := url.Parse(UtilsGetProxyUrl())
+	remote, err := url.Parse("http://" + UtilsMasterProxyUrl())
 	if err != nil {
 		return nil, err
 	}
